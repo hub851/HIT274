@@ -1,0 +1,143 @@
+tracert 210.100.96.205
+
+config t
+line console 0
+password password
+login
+exit
+enable password password
+service password-encryption
+
+line vty 0 15
+login local
+transport input ssh
+
+exit
+exit
+copy running-config startup-config
+
+ip route 209.165.200.226 255.255.255.252
+ip route 209.165.201.30 255.255.255.224
+ip route 0.0.0.0 0.0.0.0 210.100.96.205
+
+R0
+ip route 210.100.96.0 255.255.255.240 210.100.96.46
+ip route 210.100.96.16 255.255.255.240 210.100.96.50
+
+
+R1
+ip route 210.100.96.40 255.255.255.252 210.100.96.45
+ip route 210.100.96.16 255.255.255.240 210.100.96.54
+ip route 210.100.96.32 255.255.255.248 210.100.96.45
+ip route 0.0.0.0 0.0.0.0 210.100.96.45
+ip route 210.100.96.16 255.255.255.240 210.100.96.18
+
+R2
+ip route 210.100.96.40 255.255.255.252 210.100.96.49
+ip route 210.100.96.16 255.255.255.240 210.100.96.53
+ip route 210.100.96.32 255.255.255.248 210.100.96.49
+ip route 0.0.0.0 0.0.0.0 210.100.96.49
+ip route 210.100.96.0 255.255.255.240 210.100.96.1
+
+
+IPv6 Routing table
+ipv6 address 2001:ABCD:50:3::1/64
+2001:ABCD:50:3:210:11FF:FE62:C002/64
+
+R0 
+
+Gi0/0/1
+no ipv6 add 2001:ABCD:50:2:210:11FF:FE31:C002/64 eui-64
+ipv6 add 2001:ABCD:50:2::1/64
+Se0/1/0
+no ipv6 add 2001:ABCD:50:3:210:11FF:FE31:C001/64
+ipv6 add 2001:ABCD:50:3::2/64
+Se0/2/0
+no ipv6 add 2001:ABCD:50:4:210:11FF:FE31:C001/64
+no ipv6 add 2001:ABCD:50:4::2/64
+ipv6 add 2001:ABCD:50:4::1/64
+Se0/2/1
+no ipv6 add 2001:ABCD:50:5:210:11FF:FE31:C001/64
+no ipv6 add 2001:ABCD:50:5::2/64
+ipv6 add 2001:ABCD:50:5::1/64
+R1
+Gi0/0
+no ipv6 add 2001:ABCD:50:0:2D0:FFFF:FE62:9801/64
+ipv6 add 2001:ABCD:50::1/64
+Gi0/0/1
+no ipv6 add 2001:ABCD:50:1:2D0:FFFF:FE62:9802/64 eui-64
+Se0/2/0
+no ipv6 add 2001:ABCD:50:4:2D0:FFFF:FE62:9801/64 eui-64
+ipv6 add 2001:ABCD:50:4::2/64
+
+R2
+Gi0/0/0
+no ipv6 add 2001:ABCD:50:0:260:5CFF:FE02:5C01/64 eui-64
+Gi0/0/1
+no ipv6 add 2001:ABCD:50:1:260:5CFF:FE02:5C02/64 eui-64
+ipv6 add 2001:ABCD:50:1::1/64
+Se0/2/0
+no ipv6 add 2001:ABCD:50:5:260:5CFF:FE02:5C01/64 eui-64
+ipv6 add 2001:ABCD:50:5::2/64
+
+ISP Router
+ipv6 route 2001:abcd:50::/64 2001:abcd:50:3::2
+ipv6 route 2001:abcd:50:E::/64 2001:abcd:50:E::1
+ipv6 route 2001:abcd:50:17::/64 2001:abcd:50:17::1
+
+
+R0
+ipv6 route 2001:abcd:50::/64 2001:abcd:50:4::2
+ipv6 route 0::/64 2001:abcd:50:3::1
+ipv6 route 2001:abcd:50:1::/64 2001:abcd:50:5::2
+ipv6 route 2001:abcd:50:17::/64 2001:abcd:50:17::2
+ipv6 route 2001:abcd:50:E::/64 2001:abcd:50:E::2
+
+no ipv6 route 2001:abcd:50::/64 2001:abcd:50:3::1
+no ipv6 route 2001:abcd:50:17::/64 2001:abcd:50:17::2
+no ipv6 route 2001:abcd:50:E::/64 2001:abcd:50:E::2
+no ipv6 route 2001:abcd:50::/64 2001:abcd:50:4::2
+
+R1
+ipv6 route 2001:abcd:50:4::/64 2001:abcd:50:4::1
+ipv6 route 2001:abcd:50:1::/64 2001:abcd:50:5::2
+ipv6 route 2001:abcd:50:3::/64 2001:abcd:50:3::2
+ipv6 route 2001:abcd:50:2::/64 Gi0/0/1
+ipv6 route 2001:abcd:50:1::/64 se0/2/0
+ipv6 route 2001:abcd:50:5::/64 2001:abcd:50:5::2
+ipv6 route 0::/64 2001:abcd:50:3::1
+ipv6 route 2001:abcd:50::/64 2001:abcd:50:4::1
+ipv6 route 2001:abcd:50:17::/64 2001:abcd:50:17::2
+ipv6 route 2001:abcd:50:17::/64 2001:abcd:50:3::1
+no ipv6 route 2001:abcd:50:17::/64 2001:abcd:50:17::2
+
+no ipv6 route 2001:abcd:50:1::/64 2001:abcd:50:1::1
+no ipv6 route 2001:abcd:50:5::/64 2001:abcd:50:5::1
+no ipv6 route 2001:abcd:50:2::/64 2001:abcd:50:2::1
+no ipv6 route 2001:abcd:50:3::/64 2001:abcd:50:3::2
+no ipv6 route 2001:abcd:50:5::/64 2001:abcd:50:5::2
+no ipv6 route 2001:abcd:50:4::/64 2001:abcd:50:4::1
+no ipv6 route 2001:abcd:50:1::/64 2001:abcd:50:5::2
+no ipv6 route 2001:abcd:50:1::/64 2001:abcd:50:4::1
+------------------------------------------------------
+R2
+ipv6 route 2001:abcd:50::/64 2001:abcd:50::1
+ipv6 route 2001:abcd:50:5::/64 2001:abcd:50:5::1
+ipv6 route 2001:abcd:50:2::/64 2001:abcd:50:2::1
+ipv6 route 2001:abcd:50:3::/64 2001:abcd:50:3::2
+ipv6 route 2001:abcd:50::/64 2001:abcd:50:4::1
+ipv6 route 2001:abcd:50:4::/64 2001:abcd:50:5::1
+ipv6 route 2001:abcd:50:3::/64 2001:abcd:50:5::1
+ipv6 route 2001:abcd:50:2::/64 2001:abcd:50:5::1
+
+
+ISP Router
+ipv6 route 2001:abcd:50:17::/64 2001:abcd:50:17::3
+ipv6 route 2001:abcd:50::/64 2001:abcd:50:3::2
+ipv6 route 2001:abcd:50:15::/64 2001:abcd:50:17::3
+ipv6 route 2001:abcd:50:13::/64 2001:abcd:50:17::3
+ipv6 route 2001:abcd:50:12::/64 2001:abcd:50:17::3
+ipv6 route 2001:abcd:50:11::/64 2001:abcd:50:17::3
+ipv6 route 2001:abcd:50:10::/64 2001:abcd:50:17::3
+ipv6 route 2001:abcd:50:16::/64 2001:abcd:50:17::3
+ipv6 route 2001:abcd:50:14::/64 2001:abcd:50:17::3
